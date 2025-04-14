@@ -1,1 +1,3 @@
-# docker-model-runner-with-golang
+# Short Compendium of programming Model Runner with Golang
+
+
