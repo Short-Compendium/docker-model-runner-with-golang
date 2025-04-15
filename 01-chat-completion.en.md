@@ -225,7 +225,7 @@ services:
 
   # Download local LLMs
   download-local-llms:
-    image: curlimages/curl:8.12.1
+    image: curlimages/curl:8.6.0
     environment:
       - MODEL_RUNNER_BASE_URL=${MODEL_RUNNER_BASE_URL}
     entrypoint: |
