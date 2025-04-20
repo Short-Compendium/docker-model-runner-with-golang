@@ -1,4 +1,5 @@
 *.fr.md
-/02-embeddings
-/03-embeddings-refactored
+/03-embeddings-distances
+/04-embeddings
+/05-embeddings-refactored
 /backup
