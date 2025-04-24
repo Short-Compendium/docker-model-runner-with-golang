@@ -1,0 +1,25 @@
+# docker compose up --build --no-log-prefix
+services:
+  chat-stream:
+    build: .
+    command: go run main.go
+    environment:
+      - MODEL_RUNNER_BASE_URL=${MODEL_RUNNER_BASE_URL}
+    depends_on:
+      download-local-llms:
+        condition: service_completed_successfully
+    volumes:
+      - ./:/app
+
+  # Download local Docker Model Runner LLMs
+  download-local-llms:
+    image: curlimages/curl:8.12.1
+    environment:
+      - MODEL_RUNNER_BASE_URL=${MODEL_RUNNER_BASE_URL}
+    entrypoint: |
+      sh -c '      
+      # Download Embedding model
+      curl -s "${MODEL_RUNNER_BASE_URL}/models/create" -d @- << EOF
+      {"from": "ai/mxbai-embed-large"}
+      EOF
+      '
