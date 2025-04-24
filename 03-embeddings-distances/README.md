@@ -1,2 +1,2 @@
-# RAG from scratch with Docker Model Runner  - Part 1
+# RAG from scratch with Docker Model Runner  - Part 2a
 
