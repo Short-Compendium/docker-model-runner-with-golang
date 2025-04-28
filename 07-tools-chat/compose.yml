@@ -1,19 +1,12 @@
+# docker compose up --build --no-log-prefix
 services:
   use-tools:
     build: .
-    command: go run main.go
-    #command: go run main.go; sleep infinity
     environment:
       - MODEL_RUNNER_BASE_URL=${MODEL_RUNNER_BASE_URL}
     depends_on:
       download-local-llms:
         condition: service_completed_successfully
-    volumes:
-      - ./:/app
-    #develop:
-    #  watch:
-    #    - action: rebuild
-    #      path: ./main.go
 
   # Download local Docker Model Runner LLMs
   download-local-llms:
@@ -24,6 +17,6 @@ services:
       sh -c '
       # Download Chat model
       curl -s "${MODEL_RUNNER_BASE_URL}/models/create" -d @- << EOF
-      {"from": "ai/qwen2.5:0.5B-F16"}
+      {"from": "ai/llama3.2"}
       EOF
       '

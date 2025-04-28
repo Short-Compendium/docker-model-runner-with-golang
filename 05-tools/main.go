@@ -38,7 +38,7 @@ func main() {
 		},
 	}
 
-	vulcanSalute := openai.ChatCompletionToolParam{
+	vulcanSaluteTool := openai.ChatCompletionToolParam{
 		Function: openai.FunctionDefinitionParam{
 			Name:        "vulcan_salute",
 			Description: openai.String("Give a vulcan salute to the given person name"),
@@ -56,7 +56,7 @@ func main() {
 
 	tools := []openai.ChatCompletionToolParam{
 		sayHelloTool,
-		vulcanSalute,
+		vulcanSaluteTool,
 	}
 	
 	userQuestion := openai.UserMessage(`

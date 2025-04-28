@@ -39,7 +39,7 @@ func main() {
 		},
 	}
 
-	vulcanSalute := openai.ChatCompletionToolParam{
+	vulcanSaluteTool := openai.ChatCompletionToolParam{
 		Function: openai.FunctionDefinitionParam{
 			Name:        "vulcan_salute",
 			Description: openai.String("Give a vulcan salute to the given person name"),
@@ -57,7 +57,7 @@ func main() {
 
 	tools := []openai.ChatCompletionToolParam{
 		sayHelloTool,
-		vulcanSalute,
+		vulcanSaluteTool,
 	}
 
 	userQuestion := openai.UserMessage(`
@@ -91,30 +91,24 @@ func main() {
 		return
 	}
 
-	//params.Messages = append(params.Messages, completion.Choices[0].Message.ToParam())
-
+	// Display the tool calls
 	for _, toolCall := range toolCalls {
-		//fmt.Println(toolCall.Function.Name, toolCall.Function.Arguments)
+		var args map[string]interface{}
 
 		switch toolCall.Function.Name {
 		case "say_hello":
-			args, _ := JsonStringToMap(toolCall.Function.Arguments)
+			args, _ = JsonStringToMap(toolCall.Function.Arguments)
 			fmt.Println(sayHello(args))
+		
+		case "vulcan_salute":
+			args, _ = JsonStringToMap(toolCall.Function.Arguments)
+			fmt.Println(vulcanSalute(args))
 
 		default:
 			fmt.Println("Unknown function call:", toolCall.Function.Name)
 		}
 	}
 
-}
-
-func sayHello(arguments map[string]interface{}) string {
-
-	if name, ok := arguments["name"].(string); ok {
-		return "Hello " + name
-	} else {
-		return ""
-	}
 }
 
 func JsonStringToMap(jsonString string) (map[string]interface{}, error) {
@@ -125,3 +119,22 @@ func JsonStringToMap(jsonString string) (map[string]interface{}, error) {
 	}
 	return result, nil
 }
+
+
+func sayHello(arguments map[string]interface{}) string {
+
+	if name, ok := arguments["name"].(string); ok {
+		return "Hello " + name
+	} else {
+		return ""
+	}
+}
+
+func vulcanSalute(arguments map[string]interface{}) string {
+	if name, ok := arguments["name"].(string); ok {
+		return "Live long and prosper " + name
+	} else {
+		return ""
+	}
+}
+

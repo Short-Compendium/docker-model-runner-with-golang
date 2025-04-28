@@ -24,7 +24,7 @@ func main() {
 		option.WithAPIKey(""),
 	)
 
-	helloTool := openai.ChatCompletionToolParam{
+	sayHelloTool := openai.ChatCompletionToolParam{
 		Function: openai.FunctionDefinitionParam{
 			Name:        "say_hello",
 			Description: openai.String("Say hello to the given person name"),
@@ -40,8 +40,25 @@ func main() {
 		},
 	}
 
+	vulcanSaluteTool := openai.ChatCompletionToolParam{
+		Function: openai.FunctionDefinitionParam{
+			Name:        "vulcan_salute",
+			Description: openai.String("Give a vulcan salute to the given person name"),
+			Parameters: openai.FunctionParameters{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"name": map[string]string{
+						"type": "string",
+					},
+				},
+				"required": []string{"name"},
+			},
+		},
+	}
+
 	tools := []openai.ChatCompletionToolParam{
-		helloTool,
+		sayHelloTool,
+		vulcanSaluteTool,
 	}
 
 	systemInstructions := openai.SystemMessage(`You are a useful AI agent.`)
@@ -51,8 +68,11 @@ func main() {
 	Ignore all things not related to the usage of a tool
 	`)
 
-	userQuestion := openai.UserMessage(`Say hello to Jean-Luc Picard and Say hello to James Kirk and Spock.
-	Then generate a nice output with the results and insert fancy emojis between each hello.
+	userQuestion := openai.UserMessage(`
+		Say hello to Jean-Luc Picard 
+		and Say hello to James Kirk 
+		and make a Vulcan salute to Spock.
+		Add some fancy emojis to the results.
 	`)
 
 	params := openai.ChatCompletionNewParams{
@@ -63,7 +83,6 @@ func main() {
 		},
 		ParallelToolCalls: openai.Bool(true),
 		Tools:             tools,
-		Seed:              openai.Int(0),
 		Model:             model,
 		Temperature:       openai.Opt(0.0),
 	}
@@ -83,18 +102,22 @@ func main() {
 		return
 	}
 
-	//params.Messages = append(params.Messages, completion.Choices[0].Message.ToParam())
-
+	// Display the tool calls
 	firstCompletionResult := "RESULTS:\n"
 
 	for _, toolCall := range toolCalls {
-		//fmt.Println(toolCall.Function.Name, toolCall.Function.Arguments)
+		var args map[string]interface{}
 
 		switch toolCall.Function.Name {
 		case "say_hello":
-			args, _ := JsonStringToMap(toolCall.Function.Arguments)
-			firstCompletionResult += sayHello(args) + "\n"
+			args, _ = JsonStringToMap(toolCall.Function.Arguments)
 			//fmt.Println(sayHello(args))
+			firstCompletionResult += sayHello(args) + "\n"
+
+		case "vulcan_salute":
+			args, _ = JsonStringToMap(toolCall.Function.Arguments)
+			//fmt.Println(vulcanSalute(args))
+			firstCompletionResult += vulcanSalute(args) + "\n"
 
 		default:
 			fmt.Println("Unknown function call:", toolCall.Function.Name)
@@ -113,9 +136,6 @@ func main() {
 			openai.SystemMessage(firstCompletionResult),
 			userQuestion,
 		},
-		//ParallelToolCalls: openai.Bool(true),
-		//Tools:             tools,
-		//Seed:              openai.Int(0),
 		Model:       model,
 		Temperature: openai.Opt(0.8),
 	}
@@ -136,6 +156,15 @@ func main() {
 
 }
 
+func JsonStringToMap(jsonString string) (map[string]interface{}, error) {
+	var result map[string]interface{}
+	err := json.Unmarshal([]byte(jsonString), &result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func sayHello(arguments map[string]interface{}) string {
 
 	if name, ok := arguments["name"].(string); ok {
@@ -145,11 +174,10 @@ func sayHello(arguments map[string]interface{}) string {
 	}
 }
 
-func JsonStringToMap(jsonString string) (map[string]interface{}, error) {
-	var result map[string]interface{}
-	err := json.Unmarshal([]byte(jsonString), &result)
-	if err != nil {
-		return nil, err
+func vulcanSalute(arguments map[string]interface{}) string {
+	if name, ok := arguments["name"].(string); ok {
+		return "Live long and prosper " + name
+	} else {
+		return ""
 	}
-	return result, nil
 }
