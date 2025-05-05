@@ -1,5 +1,5 @@
 {
-	"name": "Parakeet 🦜🪺",
+	"name": "🐳 Docker Model Runner",
 
 	"dockerComposeFile": "compose.yml",
 	"service": "ai-workspace",
