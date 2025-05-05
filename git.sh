@@ -20,18 +20,17 @@ case $1 in
     emoji="✨"
     ;;
 
+  # 🧩: sparkles
+  jigsaw|example|examples|demo)
+    message="Introduce new example(s)"
+    emoji="🧩"
+    ;;
+
   # 📝: memo
   memo|doc|documentation)
     message="Add or update documentation"
     emoji="📝"
     ;;
-
-  # 🌍: website
-  website)
-    message="Update website"
-    emoji="🌍"
-    ;;
-
 
   # 🌸: cherry_blossom
   gardening|garden|clean|cleaning)

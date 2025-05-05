@@ -34,13 +34,8 @@
     "[dockercompose]": {
         "editor.fontSize": 16,
     },
-    "[python]": {
-        "editor.fontSize": 16,
-
-    },
     "[json]": {
         "editor.fontSize": 16,
-
     },
     "[yaml]": {
         "editor.fontSize": 16,
@@ -48,6 +43,5 @@
     },
     "[go]": {
         "editor.fontSize": 16,
-    },
-    "python.defaultInterpreterPath": "~/.venv/bin/python"
+    }
 }
