@@ -47,7 +47,7 @@ func main() {
 		Strict:      openai.Bool(true),
 	}
 
-	userQuestion := openai.UserMessage("List of 5 countries in Europe")
+	userQuestion := openai.UserMessage("List of 10 countries in Europe")
 
 	params := openai.ChatCompletionNewParams{
 		Messages: []openai.ChatCompletionMessageParamUnion{
@@ -71,6 +71,8 @@ func main() {
 
 	data := completion.Choices[0].Message.Content
 
+	fmt.Println("Countries List:\n", data)
+
 	var countriesList map[string][]string
 
 	err = json.Unmarshal([]byte(data), &countriesList)
@@ -79,6 +81,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Countries List:")
+	
 	for idx, country := range countriesList["countries"] {
 		fmt.Println(idx, ".", country)
 	}

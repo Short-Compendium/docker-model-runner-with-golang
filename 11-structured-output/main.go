@@ -25,14 +25,29 @@ func main() {
 		option.WithAPIKey(""),
 	)
 
-	// Get a list of countries in Europe
+	// Get a list of countries somewhere in the world
 	schema := map[string]any{
 		"type": "object",
 		"properties": map[string]any{
 			"countries": map[string]any{
 				"type": "array",
 				"items": map[string]any{
-					"type": "string",
+					"type": "object",
+					"properties": map[string]any{
+						"name": map[string]any{
+							"type": "string",
+						},
+						"capital": map[string]any{
+							"type": "string",
+						},
+						"languages": map[string]any{
+							"type": "array",
+							"items": map[string]any{
+								"type": "string",
+							},
+						},
+					},
+					"required": []string{"name", "capital", "languages"},
 				},
 			},
 		},
@@ -70,67 +85,16 @@ func main() {
 
 	data := completion.Choices[0].Message.Content
 
-	fmt.Println("Countries List:\n", data)
-
-	var countriesList map[string][]string
+	var countriesList map[string][]any
 
 	err = json.Unmarshal([]byte(data), &countriesList)
 
 	if err != nil {
 		panic(err)
 	}
-	
 	fmt.Println("Countries List:")
-
-	schema = map[string]any{
-		"type": "object",
-		"properties": map[string]any{
-			"name": map[string]any{
-				"type": "string",
-			},
-			"capital": map[string]any{
-				"type": "string",
-			},
-			"languages": map[string]any{
-				"type": "array",
-				"items": map[string]any{
-					"type": "string",
-				},
-			},
-		},
-		"required": []string{"name", "capital", "languages"},
-	}
-
-	schemaParam = openai.ResponseFormatJSONSchemaJSONSchemaParam{
-		Name:        "country_info",
-		Description: openai.String("Notable information about a country in the world"),
-		Schema:      schema,
-		Strict:      openai.Bool(true),
-	}
-
 	for idx, country := range countriesList["countries"] {
 		fmt.Println(idx, ".", country)
-		userQuestion := openai.UserMessage("Tell me about " + country)
-
-		params := openai.ChatCompletionNewParams{
-			Messages: []openai.ChatCompletionMessageParamUnion{
-				userQuestion,
-			},
-			Model:       model,
-			Temperature: openai.Opt(0.0),
-			ResponseFormat: openai.ChatCompletionNewParamsResponseFormatUnion{
-				OfJSONSchema: &openai.ResponseFormatJSONSchemaParam{
-					JSONSchema: schemaParam,
-				},
-			},
-		}
-		// Make completion request
-		completion, err := client.Chat.Completions.New(ctx, params)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println("Response:", completion.Choices[0].Message.Content)
-
 	}
 
 }

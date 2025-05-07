@@ -42,6 +42,6 @@
 
     },
     "[go]": {
-        "editor.fontSize": 16,
+        "editor.fontSize": 15,
     }
 }
