@@ -25,28 +25,6 @@ func main() {
 		option.WithAPIKey(""),
 	)
 
-	/*
-	{
-		"type": "object",
-		"properties": {
-			"name": {
-				"type": "string"
-			},
-			"capital": {
-				"type": "string"
-			},
-			"languages": {
-				"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-		},
-		"required": ["name", "capital", "languages"]
-	}
-
-	*/
-
 	schema := map[string]any{
 		"type": "object",
 		"properties": map[string]any{
