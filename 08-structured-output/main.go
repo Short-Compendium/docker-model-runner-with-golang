@@ -9,7 +9,10 @@ import (
 	"github.com/openai/openai-go/option"
 )
 
-// MODEL_RUNNER_BASE_URL=http://localhost:12434  MODEL_RUNNER_LLM_CHAT=ai/qwen2.5:0.5B-F16 go run main.go
+// MODEL_RUNNER_BASE_URL=http://localhost:12434  MODEL_RUNNER_LLM_CHAT=ai/qwen2.5:latest go run main.go
+// From a container:
+// MODEL_RUNNER_BASE_URL=http://model-runner.docker.internal MODEL_RUNNER_LLM_CHAT=ai/qwen2.5:latest go run main.go
+
 func main() {
 	ctx := context.Background()
 

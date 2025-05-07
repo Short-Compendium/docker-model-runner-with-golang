@@ -1,4 +1,4 @@
-module structured-output-countries
+module structured-output-countries-again
 
 go 1.24.0
 

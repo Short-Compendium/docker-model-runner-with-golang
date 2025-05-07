@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -9,7 +10,10 @@ import (
 	"github.com/openai/openai-go/option"
 )
 
-// MODEL_RUNNER_BASE_URL=http://localhost:12434  MODEL_RUNNER_LLM_CHAT=ai/qwen2.5:0.5B-F16 go run main.go
+
+// MODEL_RUNNER_BASE_URL=http://localhost:12434  MODEL_RUNNER_LLM_CHAT=ai/qwen2.5:1.5B-F16 go run main.go
+// From a container:
+// MODEL_RUNNER_BASE_URL=http://model-runner.docker.internal MODEL_RUNNER_LLM_CHAT=ai/qwen2.5:1.5B-F16 go run main.go
 func main() {
 	ctx := context.Background()
 
@@ -22,35 +26,28 @@ func main() {
 		option.WithAPIKey(""),
 	)
 
+	// Get a list of countries in Europe
 	schema := map[string]any{
 		"type": "object",
 		"properties": map[string]any{
-			"name": map[string]any{
-				"type": "string",
-			},
-			"capital": map[string]any{
-				"type": "string",
-			},
-			"languages": map[string]any{
+			"countries": map[string]any{
 				"type": "array",
 				"items": map[string]any{
 					"type": "string",
 				},
 			},
 		},
-		"required": []string{"name", "capital", "languages"},
+		"required": []string{"countries"},
 	}
 
 	schemaParam := openai.ResponseFormatJSONSchemaJSONSchemaParam{
-		Name:        "country_info",
-		Description: openai.String("Notable information about a country in the world"),
+		Name:        "List of countries",
+		Description: openai.String("List of countries in the world"),
 		Schema:      schema,
 		Strict:      openai.Bool(true),
 	}
 
-	userQuestion := openai.UserMessage(`
-		Tell me about Canada.
-	`)
+	userQuestion := openai.UserMessage("List of 5 countries in Europe")
 
 	params := openai.ChatCompletionNewParams{
 		Messages: []openai.ChatCompletionMessageParamUnion{
@@ -67,9 +64,23 @@ func main() {
 
 	// Make completion request
 	completion, err := client.Chat.Completions.New(ctx, params)
+
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Response:", completion.Choices[0].Message.Content)
+
+	data := completion.Choices[0].Message.Content
+
+	var countriesList map[string][]string
+
+	err = json.Unmarshal([]byte(data), &countriesList)
+
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Countries List:")
+	for idx, country := range countriesList["countries"] {
+		fmt.Println(idx, ".", country)
+	}
 
 }
