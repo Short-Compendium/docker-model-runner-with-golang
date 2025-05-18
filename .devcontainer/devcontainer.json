@@ -38,6 +38,6 @@
 	"remoteUser": "${localEnv:USER}",
 	// Run commands after the container is created.
 	//"postCreateCommand": "sudo chmod 666 /var/run/docker.sock"
-	"postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}; sudo chmod 666 /var/run/docker.sock"
+	"postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} ; sudo chmod 666 /var/run/docker.sock"
 
 }

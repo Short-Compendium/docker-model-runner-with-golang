@@ -1,4 +1,4 @@
-module structured-output-countries
+module use-mcp-toolkit-4
 
 go 1.24.0
 

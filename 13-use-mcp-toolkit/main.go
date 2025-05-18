@@ -85,7 +85,8 @@ func main() {
 	// Create a list of messages for the chat completion request
 	messages := []openai.ChatCompletionMessageParamUnion{
 		openai.SystemMessage("You are a pizza expert."),
-		openai.UserMessage("Search information about hawaiian pizza.(only 3 results)"),
+		//openai.UserMessage("Search information about hawaiian pizza.(only 3 results)"),
+		openai.UserMessage("Search for pizzerias in lyon"),
 	}
 
 	// Create the chat completion parameters

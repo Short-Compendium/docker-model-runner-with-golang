@@ -1,0 +1,51 @@
+# docker compose up --build --no-log-prefix
+services:
+  use-mcp-toolkit-with-openai-bis:
+    build: .
+    environment:
+      - MODEL_RUNNER_BASE_URL=${MODEL_RUNNER_BASE_URL}
+      - MODEL_RUNNER_LLM_CHAT=${MODEL_RUNNER_LLM_CHAT}
+      - MODEL_RUNNER_LLM_TOOLS=${MODEL_RUNNER_LLM_TOOLS}
+    depends_on:
+      - llm-chat
+      - llm-tools
+
+  # Download local Docker Model Runner LLMs
+  
+  #llm-chat:
+  #  provider:
+  #    type: model
+  #    options:
+  #      model: ${MODEL_RUNNER_LLM_CHAT}
+
+  #llm-tools:
+  #  provider:
+  #    type: model
+  #    options:
+  #      model: ${MODEL_RUNNER_LLM_TOOLS}
+
+  llm-chat:
+    image: curlimages/curl:8.12.1
+    environment:
+      - MODEL_RUNNER_BASE_URL=${MODEL_RUNNER_BASE_URL}
+      - MODEL_RUNNER_LLM_CHAT=${MODEL_RUNNER_LLM_CHAT}
+    entrypoint: |
+      sh -c '
+      # Download Chat model
+      curl -s "${MODEL_RUNNER_BASE_URL}/models/create" -d @- << EOF
+      {"from": "${MODEL_RUNNER_LLM_CHAT}"}
+      EOF
+      '
+
+  llm-tools:
+    image: curlimages/curl:8.12.1
+    environment:
+      - MODEL_RUNNER_BASE_URL=${MODEL_RUNNER_BASE_URL}
+      - MODEL_RUNNER_LLM_TOOLS=${MODEL_RUNNER_LLM_TOOLS}
+    entrypoint: |
+      sh -c '
+      # Download Chat model
+      curl -s "${MODEL_RUNNER_BASE_URL}/models/create" -d @- << EOF
+      {"from": "${MODEL_RUNNER_LLM_TOOLS}"}
+      EOF
+      '

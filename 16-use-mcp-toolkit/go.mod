@@ -1,4 +1,4 @@
-module use-mcp-toolkit-2
+module use-mcp-toolkit-5
 
 go 1.24.0
 

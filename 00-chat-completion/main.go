@@ -14,7 +14,8 @@ import (
 func main() {
 	// Docker Model Runner Chat base URL
 	llmURL := os.Getenv("MODEL_RUNNER_BASE_URL") + "/engines/llama.cpp/v1/"
-	model := "ai/qwen2.5:0.5B-F16"
+	model := os.Getenv("MODEL_RUNNER_LLM_CHAT")
+	//model := "ai/qwen2.5:0.5B-F16"
 	//model := "ai/qwen2.5:1.5B-F16"
 	//model := "ai/qwen2.5:latest"
 
@@ -43,4 +44,6 @@ func main() {
 	}
 	fmt.Println(completion.Choices[0].Message.Content)
 
+	// Print a hello world message
+	
 }
