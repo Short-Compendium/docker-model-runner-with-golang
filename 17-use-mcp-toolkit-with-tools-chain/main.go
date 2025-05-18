@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -40,7 +39,7 @@ func main() {
 
 		Then fetch the URLs from the search information results.
 
-		Make a structured report with all the results,
+		Make a structured detailed report with all the results,
 		The output format MUST be in markdown.
 	`
 
@@ -77,21 +76,19 @@ func main() {
 		//fmt.Println("🛠️  Description: ", tool.Function.Description)
 	}
 
-	// Create a list of messages for the chat completion request
+	// Create a list of messages for the tools and chat completion requests
 	messages := []openai.ChatCompletionMessageParamUnion{
 		openai.SystemMessage(systemInstructions),
 		openai.SystemMessage("Focus only on the part of the text that is related to tools to call."),
 		openai.UserMessage(userQuestion),
 	}
 
-	//var searching = true
-	// Create the chat completion parameters
-
 	DetectToolThenCallIt := func() bool {
+		// Create the chat completion parameters
 		params := openai.ChatCompletionNewParams{
 			Messages:          messages,
 			ParallelToolCalls: openai.Bool(true),
-			Tools:             openAITools, // ✋ Pass the tools to the request
+			Tools:             openAITools,
 			Seed:              openai.Int(0),
 			Model:             modelTools,
 			Temperature:       openai.Opt(0.0),
@@ -107,6 +104,7 @@ func main() {
 		// Check if the completion contains any tool calls
 		detectedToolCalls := completion.Choices[0].Message.ToolCalls
 
+		// Exit if no tool calls are detected
 		if len(detectedToolCalls) == 0 {
 			fmt.Println("👋 No function call")
 			return false
@@ -122,6 +120,7 @@ func main() {
 
 			fmt.Println("📣 calling ", toolCall.Function.Name, toolCall.Function.Arguments)
 
+			// Call the tool with the arguments
 			toolResponse, err := mcpClient.CallTool(ctx, toolCall.Function.Name, args)
 			if err != nil {
 				log.Println("❌😡 Failed to call tool:", err)
@@ -151,13 +150,17 @@ func main() {
 	for DetectToolThenCallIt() {
 		fmt.Println("✅ Pass number", pass, "of tool calls executed.")
 		pass++
-		if pass > 2 { // to avoid too long searches
+		// to avoid too long and useless searches
+		if pass > 2 {
 			break
 		}
 	}
 
 	fmt.Println("🎉 tools execution completed.")
 
+	// only for ai/qwen3:latest
+	messages = append(messages, openai.SystemMessage("/no_think"))
+		
 	params := openai.ChatCompletionNewParams{
 		Messages:    messages,
 		Model:       modelChat,
@@ -244,14 +247,4 @@ func ConvertToOpenAITools(tools []mcp_golang.ToolRetType) []openai.ChatCompletio
 		}
 	}
 	return openAITools
-}
-
-func JSONPretty(toolCall openai.ChatCompletionMessageToolCall) string {
-	// how to pretty print a json string
-	var prettyJSON bytes.Buffer
-	_ = json.Indent(&prettyJSON, []byte(toolCall.RawJSON()), "", "\t")
-	// and remove escape characters
-	prettyJSONString := prettyJSON.String()
-	prettyJSONString = string(bytes.ReplaceAll([]byte(prettyJSONString), []byte("\\\""), []byte("\"")))
-	return prettyJSONString
 }
