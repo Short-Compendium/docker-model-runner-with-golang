@@ -41,7 +41,6 @@ func main() {
 		Then fetch the URLs from the search information results.
 
 		Make a structured report with all the results,
-		Make sure to use emojiis when it's relevant.
 		The output format MUST be in markdown.
 	`
 

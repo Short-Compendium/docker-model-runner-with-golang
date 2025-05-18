@@ -11,14 +11,13 @@ services:
       - llm-tools
 
   # Download local Docker Model Runner LLMs
-  
-  #llm-chat:
+  # llm-chat:
   #  provider:
   #    type: model
   #    options:
   #      model: ${MODEL_RUNNER_LLM_CHAT}
 
-  #llm-tools:
+  # llm-tools:
   #  provider:
   #    type: model
   #    options:
