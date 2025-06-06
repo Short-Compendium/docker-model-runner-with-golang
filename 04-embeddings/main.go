@@ -118,6 +118,7 @@ func main() {
 	if err != nil {
 		log.Fatal("😡:", err)
 	}
+
 	// -------------------------------------------------
 	// Create a vector record from the user embedding
 	// -------------------------------------------------

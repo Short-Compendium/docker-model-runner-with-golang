@@ -21,7 +21,13 @@
 				"aaron-bond.better-comments",
 				"PKief.material-icon-theme",
 				"PKief.material-product-icons",
-				"wayou.vscode-todo-highlight"
+				"wayou.vscode-todo-highlight",
+				"docker.docker",
+				"rust-lang.rust-analyzer",
+				"ryu1kn.text-marker",
+				"anseki.vscode-color",
+				"JeronimoEkerdt.color-picker-universal",
+				"hashicorp.hcl"
 			]
 		}
 	},

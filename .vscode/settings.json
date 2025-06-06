@@ -43,5 +43,23 @@
     },
     "[go]": {
         "editor.fontSize": 15,
-    }
+    },
+    "todohighlight.keywords": [
+        {
+            "text": "NOTE:",
+            "color": "#ffffff",
+            "backgroundColor": "#0062FF",
+            "border": "1px solid #0062FF",
+            "borderRadius": "3px",
+            "isWholeLine": false
+        },
+        {
+            "text": "DEBUG",
+            "color": "#ffffff",
+            "backgroundColor": "#ff0000",
+            "border": "1px solid #ff0000",
+            "borderRadius": "3px",
+            "isWholeLine": false
+        }
+    ]
 }
